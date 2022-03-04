@@ -172,6 +172,6 @@ Once we have validated the resolution, we can run the Copy Data debug from the D
 
 ## Bonus - Private Endpoint Troubleshooting Flow
 
-
+![TroubleshootingFlow](https://github.com/Tchimwa/Private-Endpoint-with-Azure-Data-Factory/blob/master/PE_OtherDU%20TB%20Flow.pdf)
 
 I would like to say that using the DNS server level forwarder is not the only option to resolve the issue as we do have multiple like using an NVA or AzFW as DNS proxy, but it might be the cheapest among the recommended options.
