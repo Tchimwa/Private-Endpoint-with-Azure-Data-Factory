@@ -12,7 +12,6 @@ param username string = 'Azure'
 param password string = 'Data2022#'
 param sharedkey string = '@1wAy$8eKinD!'
 param adfname string = 'afdpe-training'
-param adfpename string = 'adf-pe'
 param az2op string = 'Az-to-Onprem'
 param op2az string = 'Onprem-to-Az'
 param sqladmin string = 'sqladmin'
@@ -34,7 +33,9 @@ param sqlsrvname string = 'netsqlsrv'
 param sqldbname string = 'netsqldb'
 param AzVnetName string = 'Azure'
 param OnpremVnetName string = 'On-premises'
-param fileUris string = 'https://raw.githubusercontent.com/Tchimwa/Private-Endpoint-with-Azure-Data-Factory/main/Private%20Endpoints/scripts/dnsazfwd.ps1'
+param fileUris string = 'https://raw.githubusercontent.com/Tchimwa/Private-Endpoint-with-Azure-Data-Factory/master/scripts/emp.ps1'
+param dnsfileUris string = 'https://raw.githubusercontent.com/Tchimwa/Private-Endpoint-with-Azure-Data-Factory/master/scripts/op-dns.ps1'
+param dnsUris string = 'https://raw.githubusercontent.com/Tchimwa/Private-Endpoint-with-Azure-Data-Factory/master/scripts/az-dns.ps1'
 param AzVnetSettings object = {
   addressPrefix: '10.10.0.0/16'
   subnets: [
@@ -320,7 +321,7 @@ resource op_vm_nic 'Microsoft.Network/networkInterfaces@2021-02-01' = {
           privateIPAllocationMethod: 'Static'
           privateIPAddress: '172.16.2.10'
           subnet: {
-            id: resourceId('Microsoft.Network/virtualNetworks/subnets', az_vnet.name, OnpremVnetSettings.subnets[2].name)
+            id: resourceId('Microsoft.Network/virtualNetworks/subnets', op_vnet.name, OnpremVnetSettings.subnets[2].name)
           }
         }
       }
@@ -340,7 +341,7 @@ resource op_dns_nic 'Microsoft.Network/networkInterfaces@2021-02-01' = {
           privateIPAllocationMethod: 'Static'
           privateIPAddress: '172.16.2.100'
           subnet: {
-            id: resourceId('Microsoft.Network/virtualNetworks/subnets', az_vnet.name, OnpremVnetSettings.subnets[2].name)
+            id: resourceId('Microsoft.Network/virtualNetworks/subnets', op_vnet.name, OnpremVnetSettings.subnets[2].name)
           }
         }
       }
@@ -449,6 +450,27 @@ resource az_dns 'Microsoft.Compute/virtualMachines@2021-04-01' = {
   tags: aztag
 }
 
+resource azdnsrole 'Microsoft.Compute/virtualMachines/extensions@2021-04-01' = {
+  name: 'azdns_role'
+  parent: az_dns
+  location: azloc
+  properties: {
+    publisher : 'Microsoft.Compute'
+    type : 'CustomScriptExtension'
+    typeHandlerVersion : '1.9'
+    autoUpgradeMinorVersion : true
+    settings: {
+      fileUris: [
+        '${dnsUris}'
+      ]
+    }
+    protectedSettings: {
+      'commandToExecute': 'powershell -ExecutionPolicy Unrestricted -file az-dns.ps1'
+    }
+  }
+  tags:aztag
+}
+
 resource op_vm 'Microsoft.Compute/virtualMachines@2021-04-01' = {
   name: opvmname
   location: oploc
@@ -459,7 +481,7 @@ resource op_vm 'Microsoft.Compute/virtualMachines@2021-04-01' = {
     osProfile:{
       adminPassword: password
       adminUsername:username
-      computerName:azvmname
+      computerName:opvmname
     }
     storageProfile: {
       imageReference:{
@@ -510,7 +532,7 @@ resource opvmfile 'Microsoft.Compute/virtualMachines/extensions@2021-04-01' = {
     autoUpgradeMinorVersion : true
     settings: {
       fileUris: [
-        '${hubfileUris}'
+        '${fileUris}'
       ]
     }
     protectedSettings: {
@@ -568,6 +590,27 @@ resource op_dns 'Microsoft.Compute/virtualMachines@2021-04-01' = {
     }          
   }
   tags: aztag
+}
+
+resource opdnsrole 'Microsoft.Compute/virtualMachines/extensions@2021-04-01' = {
+  name: 'opdns_role'
+  parent: op_dns
+  location: oploc
+  properties: {
+    publisher : 'Microsoft.Compute'
+    type : 'CustomScriptExtension'
+    typeHandlerVersion : '1.9'
+    autoUpgradeMinorVersion : true
+    settings: {
+      fileUris: [
+        '${dnsfileUris}'
+      ]
+    }
+    protectedSettings: {
+      'commandToExecute': 'powershell -ExecutionPolicy Unrestricted -file op-dns.ps1'
+    }
+  }
+  tags:aztag
 }
 
 resource azvpngw 'Microsoft.Network/virtualNetworkGateways@2021-02-01' = {
@@ -688,16 +731,3 @@ resource shir_adf 'Microsoft.DataFactory/factories/integrationRuntimes@2018-06-0
     type: 'SelfHosted'   
   }  
 }  
-
-resource adf_linkedService 'Microsoft.DataFactory/factories/linkedservices@2018-06-01' = {
-
-}
-
-resource adf_pipe 'Microsoft.DataFactory/factories/pipelines@2018-06-01' = {
-  name: 'adf_pipeline'
-  parent: adfpe
-  properties: {
-
-  }
-}
-

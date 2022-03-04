@@ -1,0 +1,14 @@
+#Clone the repo
+https://github.com/Tchimwa/Private-Endpoint-with-Azure-Data-Factory.git
+# Change directory 
+cd /Private-Endpoint-with-Azure-Data-Factory
+#Variables
+azrg="data-training-rg"
+azlocation="eastus"
+# Create the resource groups
+az group create --name $azrg --location $azlocation 
+
+#Create the deployment groups
+az deployment group create --resource-group $azrg --template-file pelab-main.bicep
+
+#End of the lab
