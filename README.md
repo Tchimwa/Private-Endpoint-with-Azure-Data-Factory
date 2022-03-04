@@ -78,7 +78,7 @@ From the Data Factory Studio, create a new Linked Service type **"File System"**
 
 Please make sure you Test the connection before applying the configuration to make sure that the configuration is right.
 
-(https://github.com/Tchimwa/Private-Endpoint-with-Azure-Data-Factory/blob/master/images/LInked%20Service.png)
+![LinkedService](https://github.com/Tchimwa/Private-Endpoint-with-Azure-Data-Factory/blob/master/images/LInked%20Service.png)
 
 From the Data Factory Studio:
 
