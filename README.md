@@ -90,11 +90,11 @@ From the Data Factory Studio:
 
 As **Sink**, we will create a new dataset type **"Azure SQL database"**. Here, you will have to create a new Linked service with SQL database parameters. As properties, you will choose the table created in your database at the beginning **dbo.shir**.
 
-- Azure SQL Database linked service:
-- 
+- **Azure SQL Database linked service**:
+
 ![PipelineLinkedSQLservice](https://github.com/Tchimwa/Private-Endpoint-with-Azure-Data-Factory/blob/master/images/Pipeline-SQLLinkedService.png)
 
-- Sink Properties:
+- **Sink Properties**:
 
 ![PipelineSinkConf](https://github.com/Tchimwa/Private-Endpoint-with-Azure-Data-Factory/blob/master/images/Sink%20SQLProperties.png)
 
@@ -112,7 +112,7 @@ On the Azure portal page for your data factory:
 - Select the **Networking** blade and the **Private endpoint connections** tab, and then select **+ Private endpoint**.
 - Select the location hosting the Azure VNET and make sure you choose **"dataFactory" as *Target sub-resource*
 ![CustomDNS](https://github.com/Tchimwa/Private-Endpoint-with-Azure-Data-Factory/blob/master/images/dataFactory.png)
-- The Private endpoint will be hosted by the subnet **Azure/az-pe** and will Integrate a Private Zone. (picture)
+- The Private endpoint will be hosted by the subnet **Azure/az-pe** and will Integrate a Private Zone.
 ![PESubnet](https://github.com/Tchimwa/Private-Endpoint-with-Azure-Data-Factory/blob/master/images/PrivateEndpointSetUp.png)
 - Create the Private endpoint and make sure its **"Connection State" is "Approved"** at the end of the creation.
 
