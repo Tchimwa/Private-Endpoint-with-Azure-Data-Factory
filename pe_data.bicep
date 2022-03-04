@@ -552,7 +552,7 @@ resource op_dns 'Microsoft.Compute/virtualMachines@2021-04-01' = {
     osProfile:{
       adminPassword: password
       adminUsername:username
-      computerName:azdnsvm
+      computerName:opdnsvm
     }
     storageProfile: {
       imageReference:{
