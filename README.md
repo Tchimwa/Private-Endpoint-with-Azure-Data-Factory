@@ -159,6 +159,8 @@ Our goal here is to get the VM to resolve on the private IP address of the Priva
 
 According to our public documentation, there is a need of the DNS level forwarder on Azure. The On-premises DNS server will be forwarding the queries of the Private Endpoint's FQDN to the Azure DNS forwarder, and it will relay them to the 168.63.129.16. So, on our Azure DNS server, we will set up a forwarder with the Azure IP: **168.63.129.16**. Then, we'll set up a conditional forwarder on the on-premises DNS server to relay all the DNS queries including the domain **"datafactory.azure.net"** to the Azure DNS forwarder **10.10.3.100**.
 
+<https://docs.microsoft.com/en-us/azure/private-link/private-endpoint-dns#on-premises-workloads-using-a-dns-forwarder>
+
 As Azure DNS level forwarder, we'll have **az-dns** with a DNS server installed, and configured with **168.63.129.16** as forwarder. 
 
 ![azdnsfwd](https://github.com/Tchimwa/Private-Endpoint-with-Azure-Data-Factory/blob/master/images/azdnsFwd.png)
